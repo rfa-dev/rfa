@@ -1,6 +1,6 @@
 RFA backup service.
 
-## Usuage
+## Usage
 
 Option 1: Build from Source
 
