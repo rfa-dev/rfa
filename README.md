@@ -48,9 +48,5 @@ Options:
   -h, --help         Print help
 ```
 
-### Download logos
-
-You need to **manually download the logo images**, place them in the project under `imgs/logo/`, and rename them accordingly, for example: `imgs/logo/logo-burmese.png`.
-
 ### Screenshot
 ![Screenshot](Screenshot.png)

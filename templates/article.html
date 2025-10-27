@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+    <head>
+        {% include "meta.html" %}
+        <title>{{ item.headlines }} - RFA - {{ site }}</title>
+    </head>
+
+    <body>
+        {% include "nav.html" %}
+        <div class="news-article">
+            <div class="article-header">
+                <h1 class="headline">{{ item.headlines }}</h1>
+                <div class="meta">
+                    {% if let Some(a) = author %}
+                    <span class="author">{{ a }}</span>
+                    {% endif %}
+                    <span class="date">{{ item.display_date }}</span>
+                    <span class="source"><a href="https://rfa.org{{ item.website_url }}">Source</a></span>
+                </div>
+                <div>
+                    <a href="{{ item.section.0 }}" class="section-link">{{ item.section.1 }}</a>
+                </div>
+            </div>
+
+            {% if let Some(img) = item.promo_img %}
+            <div class="cover">
+                <img
+                    src="{{ img }}"
+                    class="cover-img"
+                    loading="lazy"
+                    {% if let Some(caption) = item.caption %}
+                    alt="{{ caption }}"
+                    title="{{ caption }}"
+                    {% endif %}
+                />
+                {% if let Some(caption) = item.caption %}
+                <div class="caption">{{ caption }}</div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <div class="article-body">
+                {% for content in contents %}
+                    {% match content %}
+                        {% when crate::ContentType::Text with (text) %}
+                            <p class="paragraph">{{ text }}</p>
+                        {% when crate::ContentType::Header with (header) %}
+                            <h2 class="subhead">{{ header }}</h2>
+                        {% when crate::ContentType::Image with (url, caption) %}
+                            <figure class="article-img">
+                                <img src="{{ url }}" alt="{{ caption }}" loading="lazy" />
+                                <figcaption>{{ caption }}</figcaption>
+                            </figure>
+                        {% when crate::ContentType::Other %}
+                    {% endmatch %}
+                {% endfor %}
+            </div>
+        </div>
+    </body>
+</html>
