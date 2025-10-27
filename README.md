@@ -1,6 +1,8 @@
 RFA backup service.
 
-### Build
+## Usuage
+
+Option 1: Build from Source
 
 ```bash
 ## Install rust with the official guide
@@ -13,9 +15,13 @@ git clone https://github.com/cncases/cases.git
 cargo build -r
 ```
 
+Option 2: Download Prebuilt Binary
+
+👉 https://github.com/rfa-dev/rfa/releases
+
 ### Crawling website
 
-`./target/release/spider`
+`./target/release/spider` or `./spider`
 
 More options:
 
@@ -33,7 +39,7 @@ Options:
 
 ### Online service
 
-`./target/release/web`
+`./target/release/web` or `./web`
 
 More options:
 
