@@ -60,7 +60,7 @@ async fn main() {
         .route("/{site}", get(site))
         .route("/{site}/{*id}", get(page))
         .route("/style.css", get(style))
-        .route("/static/logo/{filename}", get(serve_logo))
+        .route("/static/imgs/{filename}", get(serve_imgs))
         .nest_service("/imgs", ServeDir::new(img_folder))
         .with_state(app_state)
         .fallback(handler_404);
@@ -358,9 +358,9 @@ async fn style() -> impl IntoResponse {
     (headers, include_str!("../../static/style.css"))
 }
 
-static STATIC_LOGO_DIR: Dir = include_dir!("static/logo");
+static STATIC_LOGO_DIR: Dir = include_dir!("static/imgs");
 
-async fn serve_logo(Path(filename): Path<String>) -> impl IntoResponse {
+async fn serve_imgs(Path(filename): Path<String>) -> impl IntoResponse {
     if let Some(file) = STATIC_LOGO_DIR.get_file(&filename) {
         let body = file.contents();
 
