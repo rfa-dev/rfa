@@ -1,29 +1,24 @@
-<!doctype html>
-<html>
-    <head>
-        {% include "meta.html" %}
-        <title>RFA - {{ site }}</title>
-    </head>
+{% extends "layout.html" %}
 
-    <body>
-        {% include "nav.html" %}
+{%- block title -%}
+        <title>RFA - {{ site }}</title>
+{%- endblock -%}
+
+{% block main %}
         <div class="news-list">
             {% for item in items %}
             <div class="news-item">
                 <img
-                    {% if let Some(promo_img) = item.promo_img %}
+                    {% if let Some(promo_img) = item.promo_img -%}
                         src="{{ promo_img }}"
-                    {% else %}
+                    {% else -%}
                         src="/static/imgs/empty.png"
-                    {% endif %}
+                    {% endif -%}
 
-                    {% if let Some(caption) = item.caption %}
-                        alt="{{ caption }}"
-                        title="{{ caption }}"
-                    {% endif %}
-
-                    class="promo-img"
-                    loading="lazy"
+                    {% if let Some(caption) = item.caption -%}
+                        alt="{{ caption }}" title="{{ caption }}"
+                    {% endif -%}
+                    class="promo-img" loading="lazy"
                 />
                 <div class="news-content">
                     <a href="{{ item.website_url }}" class="headline">{{ item.headlines }}</a>
@@ -38,9 +33,8 @@
 
         <div class="pagination">
             <a href="{{ url_path }}?page={{ page - 2 }}" class="page-btn prev"
-                {% if page < 2 %} aria-disabled="true" {% endif %} >Prev</a>
+                {%- if page < 2 %} aria-disabled="true" {% endif -%} >Prev</a>
             <a href="{{ url_path }}?page={{ page }}" class="page-btn next"
-                {% if items.len() < 20 %} aria-disabled="true" {% endif %} >Next</a>
+                {%- if items.len() < 20 %} aria-disabled="true" {% endif -%} >Next</a>
         </div>
-    </body>
-</html>
+{% endblock %}

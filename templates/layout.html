@@ -1,0 +1,59 @@
+{% let lang -%}
+{% if site == "mandarin" -%}
+  {% let lang = "zh-Hans" -%}
+{% elif site == "cantonese" -%}
+  {% let lang = "yue" -%}
+{% elif site == "burmese" -%}
+  {% let lang = "my" -%}
+{% elif site == "korean" -%}
+  {% let lang = "ko" -%}
+{% elif site == "lao" -%}
+  {% let lang = "lo" -%}
+{% elif site == "khmer" -%}
+  {% let lang = "km" -%}
+{% elif site == "tibetan" -%}
+  {% let lang = "bo" -%}
+{% elif site == "uyghur" -%}
+  {% let lang = "ug" -%}
+{% elif site == "vietnamese" -%}
+  {% let lang = "vi" -%}
+{% else -%}
+  {% let lang = "en" -%}
+{% endif -%}
+
+<!doctype html>
+<html lang="{{ lang }}">
+    <head>
+        <meta http-equiv="Content-Security-Policy" content="default-src 'none';img-src 'self';style-src 'self';">
+        <meta charset="utf-8" />
+        <meta name="referrer" content="noreferrer" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="/style.css" />
+        <link rel="icon" type="image/x-icon" href="/static/imgs/favicon.ico">
+        {% block title %}
+        {% endblock %}
+    </head>
+    <body>
+        <nav class="site-nav">
+            <div class="nav-container">
+                <a href="/{{ site }}" class="logo">
+                    <img src="/static/imgs/logo-{{ site }}.png" alt="RFA Logo" title="Radio Free Asia - {{ site }}">
+                </a>
+                <div class="nav-links">
+                    <a href="/mandarin" {%if site == "mandarin" %} class="hide" {% endif %}>普通话</a>
+                    <a href="/cantonese" {%if site == "cantonese" %} class="hide" {% endif %}>粤语</a>
+                    <a href="/burmese" {%if site == "burmese" %} class="hide" {% endif %}>မြန်မာ</a>
+                    <a href="/korean" {%if site == "korean" %} class="hide" {% endif %}>한국어</a>
+                    <a href="/lao" {%if site == "lao" %} class="hide" {% endif %}>ລາວ</a>
+                    <a href="/khmer" {%if site == "khmer" %} class="hide" {% endif %}>ខ្មែរ</a>
+                    <a href="/tibetan" {%if site == "tibetan" %} class="hide" {% endif %}>བོད་ཡིག</a>
+                    <a href="/uyghur" {%if site == "uyghur" %} class="hide" {% endif %}>ئۇيغۇر</a>
+                    <a href="/vietnamese" {%if site == "vietnamese" %} class="hide" {% endif %}>Tiếng Việt</a>
+                    <a href="/english" {%if site == "english" %} class="hide" {% endif %}>English</a>
+                </div>
+            </div>
+        </nav>
+        {% block main %}
+        {% endblock %}
+    </body>
+</html>
