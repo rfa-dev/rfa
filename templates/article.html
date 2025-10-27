@@ -51,6 +51,10 @@
                                 <img src="{{ url }}" alt="{{ caption }}" loading="lazy" />
                                 <figcaption>{{ caption }}</figcaption>
                             </figure>
+                        {% when crate::ContentType::Link with (content, url) %}
+                            <div>
+                                ↩ <a href="{{ url }}" target="_blank">{{ content }}</a>
+                            </div>
                         {% when crate::ContentType::Other %}
                     {% endmatch %}
                 {% endfor %}

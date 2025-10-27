@@ -130,6 +130,7 @@ enum ContentType {
     Text(String),
     Image(String, String),
     Header(String),
+    Link(String, String),
     #[allow(dead_code)]
     Other,
 }
@@ -184,6 +185,18 @@ impl From<&Value> for Article {
                         if !content.is_empty() {
                             contents.push(ContentType::Header(content.to_owned()))
                         }
+                    }
+                    "interstitial_link" => {
+                        let url = c["url"]
+                            .as_str()
+                            .unwrap()
+                            .replace("https://www.rfa.org", "");
+                        let content = if let Some(content) = c["content"].as_str() {
+                            content.to_owned()
+                        } else {
+                            url.clone()
+                        };
+                        contents.push(ContentType::Link(content, url));
                     }
                     _ => {
                         warn!("{} -> unknown content type: {c}", item.website_url)
