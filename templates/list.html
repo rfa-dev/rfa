@@ -39,7 +39,8 @@
         <div class="pagination">
             <a href="{{ url_path }}?page={{ page - 2 }}" class="page-btn prev"
                 {% if page < 2 %} aria-disabled="true" {% endif %} >Prev</a>
-            <a href="{{ url_path }}?page={{ page }}" class="page-btn next">Next</a>
+            <a href="{{ url_path }}?page={{ page }}" class="page-btn next"
+                {% if items.len() < 20 %} aria-disabled="true" {% endif %} >Next</a>
         </div>
     </body>
 </html>
