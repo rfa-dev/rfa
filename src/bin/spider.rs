@@ -62,7 +62,7 @@ struct Args {
 
 static ARGS: LazyLock<Args> = LazyLock::new(Args::parse);
 static SITES: LazyLock<Vec<String>> = LazyLock::new(|| {
-   if ARGS.sites.is_empty() {
+    if ARGS.sites.is_empty() {
         info!("No website specified, fetching all available websites.");
         SITE_LIST.iter().map(|s| s.to_string()).collect()
     } else {
@@ -268,9 +268,11 @@ fn extract(json: &Value) -> (Vec<String>, Vec<String>) {
 
             if let Some(contents) = item["content_elements"].as_array() {
                 for content in contents {
-                    if let Some(ctype) = content["type"].as_str() && ctype == "image" &&
-                        let Some(img_url) = content["content"].as_str() {
-                            imgs.push(img_url.to_owned());
+                    if let Some(ctype) = content["type"].as_str()
+                        && ctype == "image"
+                        && let Some(img_url) = content["content"].as_str()
+                    {
+                        imgs.push(img_url.to_owned());
                     }
                 }
             }

@@ -299,7 +299,9 @@ impl From<&Value> for Item {
         let mut id = String::new();
         let mut name = String::new();
         let mut website_url = String::new();
-        if let Some(obj) = json["websites"].as_object() && let Some((_, value)) = obj.iter().next() {
+        if let Some(obj) = json["websites"].as_object()
+            && let Some((_, value)) = obj.iter().next()
+        {
             website_url = value["website_url"].as_str().unwrap().to_owned();
             let section = value.get("website_section").unwrap();
             id = section
@@ -316,7 +318,7 @@ impl From<&Value> for Item {
                 .to_owned();
         }
 
-       Item {
+        Item {
             headlines,
             display_date,
             description,
