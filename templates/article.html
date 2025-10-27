@@ -11,10 +11,10 @@
             <div class="article-header">
                 <h1 class="headline">{{ item.headlines }}</h1>
                 <div class="meta">
+                    <span class="date">{{ item.display_date }}</span>
                     {% if let Some(a) = author %}
                     <span class="author">{{ a }}</span>
                     {% endif %}
-                    <span class="date">{{ item.display_date }}</span>
                     <span class="source"><a href="https://rfa.org{{ item.website_url }}">Source</a></span>
                 </div>
                 <div>

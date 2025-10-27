@@ -2,7 +2,12 @@ use std::{net::SocketAddr, path::PathBuf, sync::LazyLock};
 
 use askama::Template;
 use axum::{
-    body::Body, extract::{OriginalUri, Path, Query, State}, http::{header, HeaderMap, HeaderName, HeaderValue, Response, Uri}, response::{Html, IntoResponse, Redirect}, routing::get, Router
+    Router,
+    body::Body,
+    extract::{OriginalUri, Path, Query, State},
+    http::{HeaderMap, HeaderName, HeaderValue, Response, Uri, header},
+    response::{Html, IntoResponse, Redirect},
+    routing::get,
 };
 use clap::Parser;
 use fjall::{Config, PartitionCreateOptions, PartitionHandle};
@@ -52,7 +57,6 @@ async fn main() {
 
     let addr: SocketAddr = ARGS.addr.parse().unwrap();
     info!("Listening to {addr}");
-
 
     let img_folder = folder.join("imgs");
     let app = Router::new()
