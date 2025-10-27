@@ -60,9 +60,9 @@ struct Args {
     output: String,
 }
 
-static ARGS: LazyLock<Args> = LazyLock::new(|| Args::parse());
+static ARGS: LazyLock<Args> = LazyLock::new(Args::parse);
 static SITES: LazyLock<Vec<String>> = LazyLock::new(|| {
-    let sites = if ARGS.sites.is_empty() {
+   if ARGS.sites.is_empty() {
         info!("No website specified, fetching all available websites.");
         SITE_LIST.iter().map(|s| s.to_string()).collect()
     } else {
@@ -76,8 +76,7 @@ static SITES: LazyLock<Vec<String>> = LazyLock::new(|| {
             }
         }
         ARGS.sites.clone()
-    };
-    sites
+    }
 });
 
 #[tokio::main]
@@ -154,7 +153,7 @@ async fn fetch_articles(
 
     if count == 0 {
         if year < 2024 {
-            done.insert(&done_key, &[]).unwrap();
+            done.insert(&done_key, []).unwrap();
         }
         return Ok(());
     }
@@ -196,16 +195,16 @@ async fn fetch_articles(
             .unwrap()
             .trim_matches('/');
 
-        batch.insert(&db, website_url, i);
+        batch.insert(db, website_url, i);
 
         let display_date = json["display_date"].as_str().unwrap();
         let index_key = index_key(website_url, display_date);
 
-        batch.insert(&index, index_key, &[]);
+        batch.insert(index, index_key, []);
     }
     batch.commit().unwrap();
 
-    done.insert(&done_key, &[]).unwrap();
+    done.insert(&done_key, []).unwrap();
 
     Ok(())
 }
@@ -269,12 +268,9 @@ fn extract(json: &Value) -> (Vec<String>, Vec<String>) {
 
             if let Some(contents) = item["content_elements"].as_array() {
                 for content in contents {
-                    if let Some(ctype) = content["type"].as_str() {
-                        if ctype == "image" {
-                            if let Some(img_url) = content["content"].as_str() {
-                                imgs.push(img_url.to_owned());
-                            }
-                        }
+                    if let Some(ctype) = content["type"].as_str() && ctype == "image" &&
+                        let Some(img_url) = content["content"].as_str() {
+                            imgs.push(img_url.to_owned());
                     }
                 }
             }

@@ -34,7 +34,7 @@ struct Args {
     data: String,
 }
 
-static ARGS: LazyLock<Args> = LazyLock::new(|| Args::parse());
+static ARGS: LazyLock<Args> = LazyLock::new(Args::parse);
 
 #[tokio::main]
 async fn main() {
@@ -86,35 +86,33 @@ async fn page(
         let json: Value = serde_json::from_str(&content).unwrap();
         let article: Article = (&json).into();
         into_response(&article)
-    } else {
-        if let Some((site, _)) = key.split_once('/') {
-            let page = params.page.unwrap_or_default();
-            let mut items = vec![];
-            let n = page * 20;
-            for (idx, i) in state.db.prefix(key).rev().enumerate() {
-                if idx < n {
-                    continue;
-                }
-                if idx >= n + 20 {
-                    break;
-                }
-                let (_, v) = i.unwrap();
-                let json: Value = serde_json::from_slice(&v).unwrap();
-                let item: Item = (&json).into();
-                items.push(item);
+    } else if let Some((site, _)) = key.split_once('/') {
+        let page = params.page.unwrap_or_default();
+        let mut items = vec![];
+        let n = page * 20;
+        for (idx, i) in state.db.prefix(key).rev().enumerate() {
+            if idx < n {
+                continue;
             }
-            let url_path = format!("/{key}");
-            let page_list = PageList {
-                items,
-                site: site.to_owned(),
-                page: page + 1,
-                url_path,
-            };
-            into_response(&page_list)
-        } else {
-            error!("{} not found", key);
-            (StatusCode::NOT_FOUND, "Not found").into_response()
+            if idx >= n + 20 {
+                break;
+            }
+            let (_, v) = i.unwrap();
+            let json: Value = serde_json::from_slice(&v).unwrap();
+            let item: Item = (&json).into();
+            items.push(item);
         }
+        let url_path = format!("/{key}");
+        let page_list = PageList {
+            items,
+            site: site.to_owned(),
+            page: page + 1,
+            url_path,
+        };
+        into_response(&page_list)
+    } else {
+        error!("{} not found", key);
+        (StatusCode::NOT_FOUND, "Not found").into_response()
     }
 }
 
@@ -159,7 +157,7 @@ impl From<&Value> for Article {
             .get("credits")
             .and_then(|p| p.get("by"))
             .and_then(|b| b.as_array())
-            .and_then(|a| a.get(0))
+            .and_then(|a| a.first())
             .and_then(|t| t.get("name"))
             .and_then(|n| n.as_str())
             .map(|s| s.to_owned());
@@ -301,26 +299,24 @@ impl From<&Value> for Item {
         let mut id = String::new();
         let mut name = String::new();
         let mut website_url = String::new();
-        if let Some(obj) = json["websites"].as_object() {
-            if let Some((_, value)) = obj.iter().next() {
-                website_url = value["website_url"].as_str().unwrap().to_owned();
-                let section = value.get("website_section").unwrap();
-                id = section
-                    .get("_id")
-                    .unwrap_or_default()
-                    .as_str()
-                    .unwrap_or_default()
-                    .replace("world/asia/", "");
-                name = section
-                    .get("name")
-                    .unwrap_or_default()
-                    .as_str()
-                    .unwrap_or_default()
-                    .to_owned();
-            }
+        if let Some(obj) = json["websites"].as_object() && let Some((_, value)) = obj.iter().next() {
+            website_url = value["website_url"].as_str().unwrap().to_owned();
+            let section = value.get("website_section").unwrap();
+            id = section
+                .get("_id")
+                .unwrap_or_default()
+                .as_str()
+                .unwrap_or_default()
+                .replace("world/asia/", "");
+            name = section
+                .get("name")
+                .unwrap_or_default()
+                .as_str()
+                .unwrap_or_default()
+                .to_owned();
         }
 
-        let item = Item {
+       Item {
             headlines,
             display_date,
             description,
@@ -328,9 +324,7 @@ impl From<&Value> for Item {
             caption,
             website_url,
             section: (id, name),
-        };
-
-        item
+        }
     }
 }
 

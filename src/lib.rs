@@ -30,7 +30,7 @@ pub fn site_code(website: &str) -> u8 {
 /// site_code + ts + url_rest
 pub fn index_key(website_url: &str, display_date: &str) -> Vec<u8> {
     let (website, rest) = website_url.trim_matches('/').split_once('/').unwrap();
-    let code = site_code(&website);
+    let code = site_code(website);
 
     let ts: Timestamp = display_date.parse().unwrap();
     let ts_byte = ts.as_second().to_be_bytes();
@@ -47,7 +47,7 @@ pub fn index_key(website_url: &str, display_date: &str) -> Vec<u8> {
 
 pub fn get_filename_from_url(url: &str) -> &str {
     url.split('/')
-        .last()
+        .next_back()
         .and_then(|s| s.split('?').next())
         .unwrap()
 }
