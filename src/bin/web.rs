@@ -2,9 +2,9 @@ use std::{net::SocketAddr, path::PathBuf, sync::LazyLock};
 
 use askama::Template;
 use axum::{
-    Router,
+    Router, ServiceExt,
     body::Body,
-    extract::{OriginalUri, Path, Query, State},
+    extract::{OriginalUri, Path, Query, Request, State},
     http::{HeaderMap, HeaderName, HeaderValue, Response, Uri, header},
     response::{Html, IntoResponse, Redirect},
     routing::get,
@@ -18,7 +18,8 @@ use rfa::{get_filename_from_url, kv_sep_partition_option, site_code};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use tokio::net::TcpListener;
-use tower_http::services::ServeDir;
+use tower::Layer;
+use tower_http::{normalize_path::NormalizePathLayer, services::ServeDir};
 use tracing::{error, info, warn};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
@@ -68,9 +69,13 @@ async fn main() {
         .nest_service("/imgs", ServeDir::new(img_folder))
         .with_state(app_state)
         .fallback(handler_404);
+    let app = NormalizePathLayer::trim_trailing_slash().layer(app);
 
     let listener = TcpListener::bind(addr).await.unwrap();
-    axum::serve(listener, app).await.unwrap();
+
+    axum::serve(listener, ServiceExt::<Request>::into_make_service(app))
+        .await
+        .unwrap();
 }
 
 async fn page(
