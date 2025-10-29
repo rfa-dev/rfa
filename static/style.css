@@ -307,6 +307,24 @@ a {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
+.site-footer {
+    max-width: var(--nav-container-width);
+    margin: 2em auto 0 auto;
+    padding: 1em 0;
+    border-top: 1px solid #ccc;
+    text-align: center;
+    font-size: 0.9em;
+    color: #555;
+}
+
+.site-footer a {
+    color: #0077cc;
+    text-decoration: none;
+}
+.site-footer a:hover {
+    text-decoration: underline;
+}
+
 /* =========================================================
    Responsive Adjustments
    ========================================================= */

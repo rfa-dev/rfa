@@ -37,4 +37,14 @@
             <a href="{{ url_path }}?page={{ page }}" class="page-btn next"
                 {%- if items.len() < 20 %} aria-disabled="true" {% endif -%} >Next</a>
         </div>
+
+        <footer class="site-footer">
+            <div class="footer-container">
+                <p>
+                    <a href="https://github.com/rfa-dev/rfa" target="_blank" rel="noopener noreferrer">
+                        GitHub
+                    </a>
+                </p>
+            </div>
+        </footer>
 {% endblock %}
