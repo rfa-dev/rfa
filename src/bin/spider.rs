@@ -6,7 +6,7 @@ use jiff::{
 };
 use reqwest::Proxy;
 use rfa::{get_filename_from_url, index_key, kv_sep_partition_option};
-use serde_json::Value;
+use serde_json::{Value, json};
 use std::{
     error::Error,
     fs::create_dir_all,
@@ -91,6 +91,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
     }
     std::env::set_current_dir(path)?;
 
+    let img_path = PathBuf::from("imgs");
+    if !img_path.exists() {
+        create_dir_all(img_path)?;
+    }
+
     let keyspace = Config::new("rfa.db").open().unwrap();
     let db = keyspace
         .open_partition("rfa", kv_sep_partition_option())
@@ -106,7 +111,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     for site in &*SITES {
         info!("Processing website: {}", site);
-        // begin from 1998-01 to 2025-09
         let mut start_date = date(1998, 1, 1);
         let end_date = Zoned::now()
             .date()
@@ -219,10 +223,13 @@ async fn req_story_archive(
     begin: &Date,
     end: &Date,
 ) -> Result<Value, Box<dyn Error>> {
-    let query_json = format!(
-        r#"{{"feature":"results-list","offset":{},"query":"display_date:[{} TO {}]","size":{}}}"#,
-        offset, begin, end, SIZE
-    );
+    let query_json = json!({
+        "feature": "results-list",
+        "offset": offset,
+        "query": format!("display_date:[{} TO {}]", begin, end),
+        "size": SIZE
+    });
+    let query_json = query_json.to_string();
     let encoded_query = encode(&query_json);
     let filter = format!(
         r#"{{content_elements{{_id,credits{{by{{additional_properties{{original{{byline}}}},name,type,url}}}},description{{basic}},display_date,headlines{{basic}},label{{basic{{display,text,url}}}},owner{{sponsored}},promo_items{{basic{{_id,auth{{1}},type,url,caption}},lead_art{{promo_items{{basic{{_id,auth{{1}},type,url}}}}}},type}},type,websites{{{}{{website_section{{_id,name}},website_url}}}},content_elements{{type,content,url,caption{{basic}}}}}},count,next}}"#,
