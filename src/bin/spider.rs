@@ -1,7 +1,7 @@
 use clap::Parser;
 use fjall::{Config, Keyspace, PartitionCreateOptions, PartitionHandle};
 use jiff::{
-    ToSpan,
+    ToSpan, Zoned,
     civil::{Date, date},
 };
 use reqwest::Proxy;
@@ -108,7 +108,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
         info!("Processing website: {}", site);
         // begin from 1998-01 to 2025-09
         let mut start_date = date(1998, 1, 1);
-        let end_date = date(2025, 9, 30);
+        let end_date = Zoned::now()
+            .date()
+            .saturating_sub(1.month())
+            .last_of_month();
         while start_date <= end_date {
             fetch_articles(
                 &keyspace,
