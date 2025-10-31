@@ -252,7 +252,7 @@ async fn site(
     let page_list = PageList {
         items,
         site,
-        page: page + 1,
+        page,
         url_path,
     };
     into_response(&page_list)
