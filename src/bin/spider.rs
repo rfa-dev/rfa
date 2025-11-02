@@ -184,11 +184,9 @@ async fn fetch_articles(
         let img_path = img_path.join(img_name);
 
         if !Path::new(&img_path).exists() {
-            if let Err(e) = dl_obj(&img, &img_path).await {
-                error!("Failed to download image {}: {}", img, e);
-            } else {
-                info!("Downloaded image: {}", img);
-            }
+            // if failed, just rerun, better controlled by systemds
+            dl_obj(&img, &img_path).await.unwrap();
+            info!("Downloaded image: {}", img);
         } else {
             info!("Image already exists: {}", img_path.display());
         }
@@ -280,9 +278,13 @@ fn extract(json: &Value) -> (Vec<String>, Vec<String>) {
                 for content in contents {
                     if let Some(ctype) = content["type"].as_str()
                         && ctype == "image"
-                        && let Some(img_url) = content["content"].as_str()
                     {
-                        imgs.push(img_url.to_owned());
+                        if let Some(img_url) = content["content"].as_str() {
+                            imgs.push(img_url.to_owned());
+                        }
+                        if let Some(img_url) = content["url"].as_str() {
+                            imgs.push(img_url.to_owned());
+                        }
                     }
                 }
             }
