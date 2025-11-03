@@ -9,7 +9,7 @@ Option 1: Build from Source
 https://www.rust-lang.org/tools/install
 
 ## Clone the repository
-git clone https://github.com/rfa-dev/rfa
+git clone https://github.com/rfa-dev/rfa.git
 
 ## The compiled executable will be located at target/release/
 cargo build -r
