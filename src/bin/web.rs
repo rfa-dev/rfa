@@ -109,7 +109,7 @@ async fn page(
         }
         if items.is_empty() {
             error!("{} not found", key);
-            (StatusCode::NOT_FOUND, "Not found").into_response()
+            return (StatusCode::NOT_FOUND, "Not found").into_response();
         }
         let url_path = format!("/{key}");
         let page_list = PageList {
@@ -249,6 +249,11 @@ async fn site(
             let json: Value = serde_json::from_slice(&v).unwrap();
             let item: Item = (&json).into();
             items.push(item)
+        }
+
+        if items.is_empty() {
+            error!("{} not found", site);
+            return (StatusCode::NOT_FOUND, "Not found").into_response();
         }
     }
 
