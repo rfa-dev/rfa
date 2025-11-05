@@ -107,6 +107,10 @@ async fn page(
             let item: Item = (&json).into();
             items.push(item);
         }
+        if items.is_empty() {
+            error!("{} not found", key);
+            (StatusCode::NOT_FOUND, "Not found").into_response()
+        }
         let url_path = format!("/{key}");
         let page_list = PageList {
             items,
